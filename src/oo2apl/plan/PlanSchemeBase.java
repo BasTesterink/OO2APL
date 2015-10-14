@@ -30,10 +30,10 @@ public final class PlanSchemeBase {
 						  final List<PlanScheme> internalTriggerPlanSchemes,
 						  final List<PlanScheme> externalTriggerPlanSchemes,
 						  final List<PlanScheme> messagePlanSchemes){
-		this.goalPlanSchemes = Collections.unmodifiableList(goalPlanSchemes);
-		this.internalTriggerPlanSchemes = Collections.unmodifiableList(internalTriggerPlanSchemes);
-		this.externalTriggerPlanSchemes = Collections.unmodifiableList(externalTriggerPlanSchemes);
-		this.messagePlanSchemes = Collections.unmodifiableList(messagePlanSchemes);
+		this.goalPlanSchemes = goalPlanSchemes.isEmpty()? Collections.emptyList() : Collections.unmodifiableList(goalPlanSchemes);
+		this.internalTriggerPlanSchemes = internalTriggerPlanSchemes.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(internalTriggerPlanSchemes);
+		this.externalTriggerPlanSchemes = externalTriggerPlanSchemes.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(externalTriggerPlanSchemes);
+		this.messagePlanSchemes = messagePlanSchemes.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(messagePlanSchemes);
 	}
 
 	// Return new lists so that deliberation cannot accidentally change the plan scheme lists
