@@ -35,7 +35,7 @@ public abstract class DefaultAgentComponentFactory implements AgentComponentFact
 	private long instanceCount = -1; 
 	
 	/** Produces the default 2APL deliberation cycle.  */
-	public final List<DeliberationStep> produceDeliberationCycle(final DeliberationStepToAgentInterface deliberationInterface){
+	public List<DeliberationStep> produceDeliberationCycle(final DeliberationStepToAgentInterface deliberationInterface){
 		List<DeliberationStep> deliberationCycle = new ArrayList<>();
 		deliberationCycle.add(new ApplyGoalPlanSchemes(deliberationInterface));
 		deliberationCycle.add(new ApplyExternalTriggerPlanSchemes(deliberationInterface));
