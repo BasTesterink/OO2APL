@@ -19,6 +19,7 @@ public final class ApplyInternalTriggerPlanSchemes extends DefaultDeliberationSt
 	/** Simply grab the internal triggers and relevant plan schemes and try their application. */
 	public final void execute() throws DeliberationStepException{
 		List<Trigger> triggers = super.deliberationInterface.getAndRemoveInternalTriggers(); 
+		super.applyTriggerInterceptors(triggers, super.deliberationInterface.getInternalTriggerInterceptors());
 		List<PlanScheme> planSchemes = super.deliberationInterface.getInternalTriggerPlanSchemes();
 		super.applyPlanSchemes(triggers, planSchemes);
 	}

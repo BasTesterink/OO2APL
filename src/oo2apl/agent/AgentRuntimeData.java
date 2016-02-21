@@ -20,6 +20,7 @@ import oo2apl.plan.PlanSchemeBase;
  * 
  * @author Bas Testerink
  */
+import oo2apl.plan.TriggerInterceptor;
 public final class AgentRuntimeData {
 	/** The identifier of the agent. */
 	private final AgentID agentID;
@@ -35,6 +36,9 @@ public final class AgentRuntimeData {
 	
 	/** The current internal, external and message triggers. */
 	private List<Trigger> internalTriggers, externalTriggers, messages;
+	
+	/** The current trigger interceptors. */
+	private List<TriggerInterceptor> internalTriggerInterceptors, externalTriggerInterceptors, messageInterceptors, goalInterceptors;
 	
 	/** The agent's plan scheme base that defines its decision making. */
 	private final PlanSchemeBase planSchemeBase;
@@ -70,6 +74,10 @@ public final class AgentRuntimeData {
 		this.internalTriggers = new ArrayList<>();
 		this.externalTriggers = new ArrayList<>();
 		this.messages = new ArrayList<>();
+		this.internalTriggerInterceptors = new ArrayList<>();
+		this.externalTriggerInterceptors = new ArrayList<>();
+		this.messageInterceptors = new ArrayList<>();
+		this.goalInterceptors = new ArrayList<>();
 		this.planSchemeBase = planSchemeBase;
 		this.plans = new ArrayList<>();
 		this.deliberationCycle = Collections.unmodifiableList(deliberationCycle);
@@ -189,6 +197,26 @@ public final class AgentRuntimeData {
 	public final void adoptPlan(final Plan plan){
 		this.plans.add(plan);
 	}
+
+	/** Add an interceptor for goals. */
+	public final void adoptGoalInterceptor(final TriggerInterceptor interceptor){
+		this.goalInterceptors.add(interceptor);
+	}
+	
+	/** Add an interceptor for external triggers. */
+	public final void adoptExternalTriggerInterceptor(final TriggerInterceptor interceptor){
+		this.externalTriggerInterceptors.add(interceptor);
+	}
+
+	/** Add an interceptor for internal triggers. */
+	public final void adoptInternalTriggerInterceptor(final TriggerInterceptor interceptor){
+		this.internalTriggerInterceptors.add(interceptor);
+	}
+	
+	/** Add an interceptor for messages. */
+	public final void adoptMessageInterceptor(final TriggerInterceptor interceptor){
+		this.messageInterceptors.add(interceptor);
+	}
 	
 	/** Add an internal trigger to the list of current internal triggers. This trigger 
 	 * will be processed during the next deliberation cycle.*/
@@ -292,6 +320,26 @@ public final class AgentRuntimeData {
 	/** Get the message plan schemes of the plan scheme base. */
 	public final List<PlanScheme> getMessagePlanSchemes(){
 		return this.planSchemeBase.getMessagePlanSchemes();
+	}
+
+	/** Get the goal interceptors. */
+	public final Iterator<TriggerInterceptor> getGoalInterceptors(){
+		return this.goalInterceptors.iterator();
+	}
+	
+	/** Get the external trigger interceptors. */
+	public final Iterator<TriggerInterceptor> getExternalTriggerInterceptors(){
+		return this.externalTriggerInterceptors.iterator();
+	}
+	
+	/** Get the internal trigger interceptors. */
+	public final Iterator<TriggerInterceptor> getInternalTriggerInterceptors(){
+		return this.internalTriggerInterceptors.iterator();
+	}
+	
+	/** Get the message interceptors. */
+	public final Iterator<TriggerInterceptor> getMessageInterceptors(){
+		return this.messageInterceptors.iterator();
 	}
 	
 	/**

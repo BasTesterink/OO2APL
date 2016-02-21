@@ -19,6 +19,7 @@ public final class ApplyMessagePlanSchemes extends DefaultDeliberationStep {
 	/** Simply grab the messages and message plan schemes and try their application. */
 	public final void execute() throws DeliberationStepException{
 		List<Trigger> triggers = super.deliberationInterface.getAndRemoveMessages(); 
+		super.applyTriggerInterceptors(triggers, super.deliberationInterface.getMessageInterceptors());
 		List<PlanScheme> planSchemes = super.deliberationInterface.getMessagePlanSchemes();
 		super.applyPlanSchemes(triggers, planSchemes);
 	}

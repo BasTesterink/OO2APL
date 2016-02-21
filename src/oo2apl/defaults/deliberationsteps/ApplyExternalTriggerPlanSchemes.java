@@ -19,6 +19,7 @@ public final class ApplyExternalTriggerPlanSchemes extends DefaultDeliberationSt
 	/** Simply grab the external triggers and relevant plan schemes and try their application. */
 	public final void execute() throws DeliberationStepException{
 		List<Trigger> triggers = super.deliberationInterface.getAndRemoveExternalTriggers(); 
+		super.applyTriggerInterceptors(triggers, super.deliberationInterface.getExternalTriggerInterceptors());
 		List<PlanScheme> planSchemes = super.deliberationInterface.getExternalTriggerPlanSchemes();
 		super.applyPlanSchemes(triggers, planSchemes);
 	}

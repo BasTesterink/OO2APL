@@ -21,6 +21,7 @@ public final class ApplyGoalPlanSchemes extends DefaultDeliberationStep {
 	public final void execute() throws DeliberationStepException{
 		super.deliberationInterface.clearAchievedGoals();
 		List<? extends Trigger> triggers = super.deliberationInterface.getGoals(); 
+		super.applyTriggerInterceptors(triggers, super.deliberationInterface.getGoalInterceptors());
 		List<PlanScheme> planSchemes = super.deliberationInterface.getGoalPlanSchemes();
 		super.applyPlanSchemes(triggers, planSchemes);
 	}

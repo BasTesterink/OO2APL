@@ -1,10 +1,12 @@
 package oo2apl.agent;
   
+import java.util.Iterator;
 import java.util.List; 
 
 import oo2apl.plan.Plan;
 import oo2apl.plan.PlanExecutionError;
 import oo2apl.plan.PlanScheme;
+import oo2apl.plan.TriggerInterceptor;
 /**
  * This interface exposes all functionalities of an agent to perform a deliberation step. 
  * This includes mainly obtain certain specifications of the agent such as its plan schemes 
@@ -57,6 +59,18 @@ public final class DeliberationStepToAgentInterface {
 	
 	/** Get the message plan schemes of the plan scheme base. */
 	public final List<PlanScheme> getMessagePlanSchemes(){ return this.agent.getMessagePlanSchemes(); }
+
+	/** Get the goal interceptors. */
+	public final Iterator<TriggerInterceptor> getGoalInterceptors(){ return this.agent.getGoalInterceptors(); }
+
+	/** Get the external trigger interceptors. */
+	public final Iterator<TriggerInterceptor> getExternalTriggerInterceptors(){ return this.agent.getExternalTriggerInterceptors(); }
+
+	/** Get the internal trigger interceptors. */
+	public final Iterator<TriggerInterceptor> getInternalTriggerInterceptors(){ return this.agent.getInternalTriggerInterceptors(); }
+
+	/** Get the message interceptors. */
+	public final Iterator<TriggerInterceptor> getMessageInterceptors(){ return this.agent.getMessageInterceptors(); }
 	
 	/**
 	 * Try to apply for a given trigger a given plan scheme. If the plan scheme can 

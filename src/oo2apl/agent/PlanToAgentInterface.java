@@ -2,6 +2,7 @@ package oo2apl.agent;
 
 import oo2apl.defaults.messenger.MessageReceiverNotFoundException;
 import oo2apl.plan.Plan;
+import oo2apl.plan.TriggerInterceptor;
 
 /**
  * Exposes all functionalities to an agent that the execution of a plan might need/is allowed
@@ -47,6 +48,26 @@ public final class PlanToAgentInterface {
 	 * removed from the platform before it can start a new deliberation cycle.
 	 */
 	public final void finished(){ this.agent.finished(); } // The agent is finished with its execution
+	
+	/** Add an interceptor for goals. */
+	public final void adoptGoalInterceptor(final TriggerInterceptor interceptor){
+		this.agent.adoptGoalInterceptor(interceptor);
+	}
+	
+	/** Add an interceptor for external triggers. */
+	public final void adoptExternalTriggerInterceptor(final TriggerInterceptor interceptor){
+		this.agent.adoptExternalTriggerInterceptor(interceptor);
+	}
+
+	/** Add an interceptor for internal triggers. */
+	public final void adoptInternalTriggerInterceptor(final TriggerInterceptor interceptor){
+		this.agent.adoptInternalTriggerInterceptor(interceptor);
+	}
+	
+	/** Add an interceptor for messages. */
+	public final void adoptMessageInterceptor(final TriggerInterceptor interceptor){
+		this.agent.adoptMessageInterceptor(interceptor);
+	}
 	
 	/** Send a message through the agent's messenger client. */
 	public final void sendMessage(final AgentID receiver, final Trigger message) {
