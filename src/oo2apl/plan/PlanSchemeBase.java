@@ -1,8 +1,7 @@
 package oo2apl.plan;
-
-import java.util.ArrayList; 
+  
 import java.util.Collections;
-import java.util.List;
+import java.util.List; 
 /**
  * The plan scheme base of an agent stores its plan schemes. Currently it is assumed that 
  * the plan scheme base does not change over time. This might be a future expansion to allow 

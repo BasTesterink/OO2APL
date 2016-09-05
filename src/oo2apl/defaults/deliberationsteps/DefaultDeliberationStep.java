@@ -54,18 +54,18 @@ public abstract class DefaultDeliberationStep implements DeliberationStep {
 	 * @param triggers
 	 * @param interceptors
 	 */
-	protected final void applyTriggerInterceptors(final List<? extends Trigger> triggers, final Iterator<TriggerInterceptor> interceptors){
+	protected final void applyTriggerInterceptors(final List<? extends Trigger> triggers, final Iterator<TriggerInterceptor> interceptors){ 
 		while(interceptors.hasNext()){
 			TriggerInterceptor interceptor = interceptors.next();
-			Iterator<? extends Trigger> triggerIterator = triggers.iterator();
+			Iterator<? extends Trigger> triggerIterator = triggers.iterator(); 
 			while(triggerIterator.hasNext()){
-				Trigger trigger = triggerIterator.next(); 
-				if(this.deliberationInterface.tryApplication(trigger, interceptor)){
+				Trigger trigger = triggerIterator.next();  
+				if(this.deliberationInterface.tryApplication(trigger, interceptor)){ 
 					interceptors.remove();
-					if(interceptor.isTriggerConsuming() && !(trigger instanceof Goal)){
+					if(interceptor.isTriggerConsuming() && !(trigger instanceof Goal)){ 
 						triggerIterator.remove();
-						break;
 					} 
+					break;
 				}
 			} 
 		}

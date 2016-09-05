@@ -15,6 +15,6 @@ public final class SelfRescheduler {
 	
 	/** Reschedule this deliberation runnable so it will be executed again in the future. */
 	public final void wakeUp(){
-		deliberationRunnable.reschedule();
+		this.deliberationRunnable.reschedule();
 	}
 }

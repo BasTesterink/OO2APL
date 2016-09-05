@@ -3,13 +3,14 @@ package oo2apl.platform;
 import oo2apl.agent.AgentComponentFactory;
 import oo2apl.agent.AgentCreationFailedException;
 import oo2apl.agent.ExternalProcessToAgentInterface;
+import oo2apl.agent.AgentBuilder;
 import oo2apl.agent.AgentID;
 import oo2apl.agent.AgentType;
 import oo2apl.agent.ContextArguments; 
 import oo2apl.plan.PlanSchemeBaseArguments;
  
 /**
- * The interface exposes methods of a platform to allow a user to register new, or remove existing,
+ * This interface exposes methods of a platform to allow a user to register new, or remove existing,
  *  agent component factories, halt the platform, kill agents and create new agents.
  * @author Bas Testerink
  */
@@ -55,6 +56,22 @@ public final class AdminToPlatformInterface {
 	public final ExternalProcessToAgentInterface newAgent(final AgentType agentType, final ContextArguments contextArgs, final PlanSchemeBaseArguments planSchemeBaseArgs){
 		try {
 			return this.platform.newAgent(agentType, contextArgs, planSchemeBaseArgs);
+		} catch (AgentCreationFailedException e) { 
+			e.printStackTrace(); 
+			System.exit(1);
+			return null;
+		}
+	}
+	
+	/** 
+	 * Create a new agent and schedule it for execution, using an AgentBuilder.
+	 * @param builder The builder that is used to make the agent. 
+	 * @return An interface so that an external process can send triggers to the agent and get its ID.
+	 * @throws AgentCreationFailedException 
+	 */
+	public final ExternalProcessToAgentInterface newAgent(final AgentBuilder builder){
+		try {
+			return this.platform.newAgent(builder);
 		} catch (AgentCreationFailedException e) { 
 			e.printStackTrace(); 
 			System.exit(1);

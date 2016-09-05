@@ -8,15 +8,15 @@ import oo2apl.agent.Trigger;
  * 
  * @author Bas Testerink
  */
-public abstract class PlanScheme { 
+public interface PlanScheme { 
 	/**
-	 * Try to instantiate the plan scheme. Must return null if the plan scheme is not 
+	 * Try to instantiate the plan scheme. Must return Plan.uninstantiated() if the plan scheme is not 
 	 * relevant or applicable for the given trigger and context. If the return value is
 	 * not null then it will be adopted as a current plan and can be executed by a deliberation
 	 * step. 
 	 * @param trigger Trigger that must be processed.
 	 * @param contextInterface An interface to obtain the context of the agent.
-	 * @return Null iff the plan scheme is not relevant and applicable. 
+	 * @return Plan.uninstantiated() iff the plan scheme is not relevant and applicable, otherwise the plan to be scheduled for execution in the current deliberation cycle.
 	 */
-	public abstract Plan instantiate(final Trigger trigger, final AgentContextInterface contextInterface);
+	public Plan instantiate(final Trigger trigger, final AgentContextInterface contextInterface);
 }

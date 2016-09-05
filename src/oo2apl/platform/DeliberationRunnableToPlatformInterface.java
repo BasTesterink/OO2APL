@@ -4,7 +4,7 @@ import oo2apl.agent.AgentID;
 import oo2apl.deliberation.DeliberationRunnable;
 /**
  * Exposes the platform functionalities that a deliberation runnable requires. 
- * These are the ability to reschedule a runnable or to kill an agent.
+ * These include the ability to reschedule a runnable or to kill an agent.
  * @author Bas Testerink
  */
 public final class DeliberationRunnableToPlatformInterface {

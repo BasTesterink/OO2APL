@@ -13,6 +13,7 @@ import oo2apl.plan.Plan;
 import oo2apl.plan.PlanExecutionError;
 import oo2apl.plan.PlanScheme;
 import oo2apl.plan.PlanSchemeBase;
+import oo2apl.plan.TriggerInterceptor;
 /**
  * This class is the main container for a single agent. It contains all the references to its 
  * relevant data s.a. its id, messenger client, context container, plan scheme base, 
@@ -20,7 +21,6 @@ import oo2apl.plan.PlanSchemeBase;
  * 
  * @author Bas Testerink
  */
-import oo2apl.plan.TriggerInterceptor;
 public final class AgentRuntimeData {
 	/** The identifier of the agent. */
 	private final AgentID agentID;
@@ -191,11 +191,22 @@ public final class AgentRuntimeData {
 			this.goals.add(goal);
 		}
 	}
-	
+
 	/** Add a plan to the list of current plans. This plan will be executed during
 	 * the next "execute plans" deliberation step. */
 	public final void adoptPlan(final Plan plan){
-		this.plans.add(plan);
+		synchronized(this.plans){
+			this.plans.add(plan);
+		}
+	}
+	
+	/** Add a plan to the list of current plans. This plan will be executed during
+	 * the next "execute plans" deliberation step. The asynchronous version of adopt plan 
+	 * can be used to adopt a plan if the agent is possibly sleeping, as it check whether
+	 *  to reschedule the agent for execution. */
+	public final void asynchronousAdoptPlan(final Plan plan){
+		adoptPlan(plan);
+		checkWhetherToReschedule();
 	}
 
 	/** Add an interceptor for goals. */
@@ -221,7 +232,10 @@ public final class AgentRuntimeData {
 	/** Add an internal trigger to the list of current internal triggers. This trigger 
 	 * will be processed during the next deliberation cycle.*/
 	public final void addInternalTrigger(final Trigger trigger){
-		this.internalTriggers.add(trigger);
+		synchronized (this.internalTriggers) {
+			this.internalTriggers.add(trigger); 
+			this.checkWhetherToReschedule(); 
+		}
 	} 
 
 	/**
@@ -341,6 +355,26 @@ public final class AgentRuntimeData {
 	public final Iterator<TriggerInterceptor> getMessageInterceptors(){
 		return this.messageInterceptors.iterator();
 	}
+
+	/** Remove a goal interceptor. */
+	public final void removeGoalInterceptor(final TriggerInterceptor interceptor){
+		this.goalInterceptors.remove(interceptor);
+	}
+	
+	/** Remove an external trigger interceptor. */
+	public final void removeExternalTriggerInterceptor(final TriggerInterceptor interceptor){
+		this.externalTriggerInterceptors.remove(interceptor);
+	}
+	
+	/** Remove an internal trigger interceptor. */
+	public final void removeInternalTriggerInterceptor(final TriggerInterceptor interceptor){
+		this.internalTriggerInterceptors.remove(interceptor);
+	}
+	
+	/** Remove a message interceptor. */
+	public final void removeMessageInterceptor(final TriggerInterceptor interceptor){
+		this.messageInterceptors.remove(interceptor);
+	}
 	
 	/**
 	 * Try to apply for a given trigger a given plan scheme. If the plan scheme can 
@@ -352,10 +386,10 @@ public final class AgentRuntimeData {
 	 */
 	public final boolean tryApplication(final Trigger trigger, final PlanScheme planScheme){
 		Plan result = planScheme.instantiate(trigger, this.contextInterface);
-		if(result != null){
+		if(result != null && result != Plan.UNINSTANTIATED){
 			adoptPlan(result);
-		}
-		return result != null;
+			return true;
+		} else return false;
 	}
 	
 	/**
@@ -365,19 +399,23 @@ public final class AgentRuntimeData {
 	 * then the plan will not be executed.
 	 */
 	public final void executePlan(final Plan plan) throws PlanExecutionError {
-		if(plan.goalIsRelevant(planInterface))
+		if(plan.goalIsRelevant(this.planInterface))
 			plan.execute(this.planInterface);
 	} 
 	
 	/** Get a new list with the current instantiated plans of the agent.	 */
 	public final List<Plan> getPlans(){ 
-		if(this.plans.isEmpty()) return Collections.emptyList();
-		else return new ArrayList<>(this.plans); 
+		synchronized(this.plans){
+			if(this.plans.isEmpty()) return Collections.emptyList();
+			else return new ArrayList<>(this.plans); 
+		}
 	}
 	
 	/** Remove a plan from the list of current plans. */
 	public final void removePlan(final Plan plan){
-		this.plans.remove(plan);
+		synchronized(this.plans){
+			this.plans.remove(plan);
+		}
 	}
 	
 	///////////////////////////////////
@@ -422,15 +460,19 @@ public final class AgentRuntimeData {
 		synchronized (this.externalTriggers) {
 			synchronized(this.messages){
 				synchronized(this.rescheduler){
-					if(this.sleep) return true;
-					else if(this.plans.size() == 0 &&
-					   this.externalTriggers.size() == 0 &&
-					   this.internalTriggers.size() == 0 &&
-					   this.messages.size() == 0 &&
-					   this.goals.size() == 0){
-						this.sleep = true;
+					synchronized(this.internalTriggers){
+						synchronized(this.plans){
+							if(this.sleep) return true;
+							else if(this.plans.size() == 0 &&
+							   this.externalTriggers.size() == 0 &&
+							   this.internalTriggers.size() == 0 &&
+							   this.messages.size() == 0 &&
+							   this.goals.size() == 0){
+								this.sleep = true;
+							}
+							return this.sleep; 
+						}
 					}
-					return this.sleep; 
 				}
 			}
 		} 

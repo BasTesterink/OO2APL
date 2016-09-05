@@ -1,17 +1,6 @@
-package oo2apl.defaults;
-
-import java.util.ArrayList;
-import java.util.List;
-
+package oo2apl.defaults; 
 import oo2apl.agent.AgentComponentFactory;
-import oo2apl.agent.AgentID;
-import oo2apl.agent.DeliberationStepToAgentInterface;
-import oo2apl.defaults.deliberationsteps.ApplyExternalTriggerPlanSchemes;
-import oo2apl.defaults.deliberationsteps.ApplyGoalPlanSchemes;
-import oo2apl.defaults.deliberationsteps.ApplyInternalTriggerPlanSchemes;
-import oo2apl.defaults.deliberationsteps.ApplyMessagePlanSchemes;
-import oo2apl.defaults.deliberationsteps.ExecutePlans;
-import oo2apl.deliberation.DeliberationStep;
+import oo2apl.agent.AgentID; 
 
 /**
  * This default agent component factory takes care of the generation of agent id's and 
@@ -32,23 +21,12 @@ import oo2apl.deliberation.DeliberationStep;
  */
 public abstract class DefaultAgentComponentFactory implements AgentComponentFactory {
 	/** How many agent id's were produced. */
-	private long instanceCount = -1; 
-	
-	/** Produces the default 2APL deliberation cycle.  */
-	public List<DeliberationStep> produceDeliberationCycle(final DeliberationStepToAgentInterface deliberationInterface){
-		List<DeliberationStep> deliberationCycle = new ArrayList<>();
-		deliberationCycle.add(new ApplyGoalPlanSchemes(deliberationInterface));
-		deliberationCycle.add(new ApplyExternalTriggerPlanSchemes(deliberationInterface));
-		deliberationCycle.add(new ApplyInternalTriggerPlanSchemes(deliberationInterface));
-		deliberationCycle.add(new ApplyMessagePlanSchemes(deliberationInterface));
-		deliberationCycle.add(new ExecutePlans(deliberationInterface));
-		return deliberationCycle;
-	}
+	private long instanceCount = -1;  
 	
 	/** Produce a unique agent identity. Will return a default agent id where the 
 	 * id number is the amount of id's that we produced in the past.  */
 	public final AgentID produceNextAgentID(){
-		instanceCount++;
-		return new DefaultAgentID(instanceCount, getAgentType());
+		this.instanceCount++;
+		return new DefaultAgentID(this.instanceCount, getAgentType());
 	}
 }

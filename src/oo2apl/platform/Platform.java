@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Executors; 
 
 import oo2apl.agent.AgentKillSwitch;
 import oo2apl.agent.AgentRuntimeData;
+import oo2apl.agent.AgentBuilderFactory;
+import oo2apl.agent.AgentBuilder;
 import oo2apl.agent.AgentComponentFactory;
 import oo2apl.agent.AgentCreationFailedException;
 import oo2apl.agent.ExternalProcessToAgentInterface;
@@ -24,11 +25,13 @@ import oo2apl.deliberation.DeliberationRunnable;
 import oo2apl.deliberation.DeliberationStep;
 import oo2apl.messaging.Messenger;
 import oo2apl.messaging.AgentToMessengerInterface;
+import oo2apl.plan.Plan;
 import oo2apl.plan.PlanSchemeBase;
 import oo2apl.plan.PlanSchemeBaseArguments;
 /**
  * A Platform is a container that maintains the available thread pool, agent factories, 
  * agent kill switches (to stop an agent from outside itself) and a messenger service. 
+ * Operating the platform by code is done through an <code>AdminToPlatformInterface</code>.
  * 
  * @author Bas Testerink
  */
@@ -52,6 +55,7 @@ public final class Platform {
 		this.messenger = messenger;
 		this.factories = new HashMap<>();
 		this.agentKillSwitches = new HashMap<>(); 
+		this.factories.put(AgentBuilderFactory.AGENTTYPE, new AgentBuilderFactory()); 
 	}
 
 	/**
@@ -143,6 +147,29 @@ public final class Platform {
 		}
 	}
 	
+	/** 
+	 * Create a new agent and schedule it for execution, using an AgentBuilder.
+	 * @param builder The builder that is used to make the agent. 
+	 * @return An interface so that an external process can send triggers to the agent and get its ID.
+	 * @throws AgentCreationFailedException 
+	 */
+	public final ExternalProcessToAgentInterface newAgent(final AgentBuilder builder) throws AgentCreationFailedException{
+		ExternalProcessToAgentInterface agent;
+		// We synchronize here because otherwise it is possible that this call is made before the factory is finished, in which 
+		// case the data of another builder could potentially be used instead of the provided builder. The cause is that the 
+		// factory is 'loaded' with the builder before its produce methods are called. Hence, we do not want another builder to be 
+		// loaded in the factory in the meantime.
+		synchronized(AgentBuilderFactory.AGENTTYPE){
+			AgentBuilderFactory factory;
+			synchronized(this.factories){
+				factory = (AgentBuilderFactory) this.factories.get(AgentBuilderFactory.AGENTTYPE);
+			}
+			factory.setBuilder(builder);
+			agent = newAgent(AgentBuilderFactory.AGENTTYPE, null, null);
+		}
+		return agent;
+	}
+	
 
 	/**
 	 * Produce the data container that specifies the agent runtime configuration.  
@@ -158,6 +185,8 @@ public final class Platform {
 		PlanSchemeBase planSchemeBase = componentFactory.producePlanSchemeBase(planSchemeBaseArgs);
 		List<DeliberationStep> deliberationCycle = new ArrayList<>();
 		AgentRuntimeData agent = new AgentRuntimeData(agentID, new AgentToMessengerInterface(this.messenger, agentID), contextContainer, planSchemeBase, deliberationCycle);
+		List<Plan> initialPlans = componentFactory.produceInitialPlans();
+		for(Plan plan : initialPlans) agent.adoptPlan(plan);
 		DeliberationStepToAgentInterface deliberationInterface = agent.produceDeliberationInterface();
 		deliberationCycle.addAll(componentFactory.produceDeliberationCycle(deliberationInterface)); 
 		return agent; 

@@ -8,7 +8,7 @@ public final class AgentContextInterface {
 	/** The agent that is exposed by this interface. */
 	private final AgentRuntimeData agent;
 	
-	public AgentContextInterface(AgentRuntimeData agent){
+	public AgentContextInterface(final AgentRuntimeData agent){
 		this.agent = agent;
 	}
 	

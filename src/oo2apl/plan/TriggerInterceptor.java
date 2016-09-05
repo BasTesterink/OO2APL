@@ -1,4 +1,6 @@
 package oo2apl.plan;
+
+
 /**
  * The following description holds for the 2APL default deliberation cycle. If you change the deliberation 
  * steps then this does not necessarily hold anymore.
@@ -17,9 +19,14 @@ package oo2apl.plan;
  * Just like plan schemes, interceptors are categorized for goals, messages, external events and 
  * internal events. 
  * 
+ * The PlanToAgentInterface class contains several methods that under the hood make use of interceptors. 
+ * These methods include while loops that span multiple deliberation cycles, wait-for-trigger constructs, 
+ * and wait-on-process constructs. 
+ * Check the available methods of that class before making your own interceptors. 
+ * 
  * @author Bas Testerink
  */
-public abstract class TriggerInterceptor extends PlanScheme {
+public abstract class TriggerInterceptor implements PlanScheme {
 	/** If set to true, then the trigger that triggers this interceptor should be consumed during the deliberation cycle. */
 	private final boolean consumesTrigger;
 	
