@@ -2,8 +2,7 @@ package oo2apl.agent;
 
 import java.util.Collections;
 import java.util.List;
-
-import oo2apl.defaults.DefaultAgentComponentFactory;
+ 
 import oo2apl.plan.Plan;
 import oo2apl.plan.PlanSchemeBase;
 import oo2apl.plan.PlanSchemeBaseArguments;
@@ -15,7 +14,7 @@ import oo2apl.plan.PlanSchemeBaseArguments;
  * @author Bas Testerink
  *
  */
-public final class AgentBuilderFactory extends DefaultAgentComponentFactory {
+public final class AgentBuilderFactory implements AgentComponentFactory { 
 	public static final AgentType AGENTTYPE = new AgentType(){};
 	
 	private ContextContainer contextContainer; // The context container of the next agent instantiation

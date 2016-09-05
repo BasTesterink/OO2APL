@@ -42,10 +42,7 @@ public interface AgentComponentFactory {
 		deliberationCycle.add(new ApplyMessagePlanSchemes(deliberationInterface));
 		deliberationCycle.add(new ExecutePlans(deliberationInterface));
 		return deliberationCycle;
-	}
-	
-	/** Produce an agent identifier, should never return the same identity twice. */
-	public AgentID produceNextAgentID();
+	} 
 	
 	/** Produce the initial plans of the agent. These will be executed upon the first deliberation cycle. */
 	public default List<Plan> produceInitialPlans(){

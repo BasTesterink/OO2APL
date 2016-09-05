@@ -180,7 +180,7 @@ public final class Platform {
 	 */ 
 	private final AgentRuntimeData produceAgent(final AgentComponentFactory componentFactory, final ContextArguments contextArgs, final PlanSchemeBaseArguments planSchemeBaseArgs){
 		// TODO: check if all products are nonnull
-		AgentID agentID = componentFactory.produceNextAgentID();
+		AgentID agentID = AgentID.newInstance();
 		ContextContainer contextContainer = componentFactory.produceContextContainer(contextArgs);
 		PlanSchemeBase planSchemeBase = componentFactory.producePlanSchemeBase(planSchemeBaseArgs);
 		List<DeliberationStep> deliberationCycle = new ArrayList<>();
