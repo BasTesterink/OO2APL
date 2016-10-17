@@ -211,22 +211,26 @@ public final class AgentRuntimeData {
 
 	/** Add an interceptor for goals. */
 	public final void adoptGoalInterceptor(final TriggerInterceptor interceptor){
-		this.goalInterceptors.add(interceptor);
+		if(interceptor.isTriggerConsuming()) this.goalInterceptors.add(interceptor);
+		else this.goalInterceptors.add(0,interceptor);
 	}
 	
 	/** Add an interceptor for external triggers. */
 	public final void adoptExternalTriggerInterceptor(final TriggerInterceptor interceptor){
-		this.externalTriggerInterceptors.add(interceptor);
+		if(interceptor.isTriggerConsuming()) this.externalTriggerInterceptors.add(interceptor);
+		else this.externalTriggerInterceptors.add(0,interceptor);
 	}
 
 	/** Add an interceptor for internal triggers. */
 	public final void adoptInternalTriggerInterceptor(final TriggerInterceptor interceptor){
-		this.internalTriggerInterceptors.add(interceptor);
+		if(interceptor.isTriggerConsuming()) this.internalTriggerInterceptors.add(interceptor);
+		else this.internalTriggerInterceptors.add(0,interceptor);
 	}
 	
 	/** Add an interceptor for messages. */
 	public final void adoptMessageInterceptor(final TriggerInterceptor interceptor){
-		this.messageInterceptors.add(interceptor);
+		if(interceptor.isTriggerConsuming()) this.messageInterceptors.add(interceptor);
+		else this.messageInterceptors.add(0,interceptor);
 	}
 	
 	/** Add an internal trigger to the list of current internal triggers. This trigger 
